@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  --admin-primary: #233f0f;
+  --admin-accent: #a7c72a;
+  --admin-accent-deep: #4f6f12;
+  --admin-graphite: #182019;
+  --admin-muted: #636c64;
+  --admin-line: #dde1d8;
+  --admin-surface: #ffffff;
+  --admin-bg: #f6f7f4;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+  background: var(--admin-bg);
+  color: var(--admin-graphite);
+  font-family: Arial, "Microsoft YaHei", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+textarea {
+  resize: vertical;
+}
+
+@theme inline {
+  --color-admin-primary: var(--admin-primary);
+  --color-admin-accent: var(--admin-accent);
+  --color-admin-accent-deep: var(--admin-accent-deep);
+  --color-admin-graphite: var(--admin-graphite);
+  --color-admin-muted: var(--admin-muted);
+  --color-admin-line: var(--admin-line);
+  --color-admin-surface: var(--admin-surface);
+  --color-admin-bg: var(--admin-bg);
+  --shadow-admin-soft: 0 10px 26px rgba(30, 43, 36, 0.07);
+}
