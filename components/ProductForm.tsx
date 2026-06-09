@@ -1,5 +1,6 @@
 import { saveProductAction } from "@/app/[locale]/(admin)/products/actions";
 import { Field, buttonClass, inputClass, secondaryButtonClass, textareaClass } from "@/components/FormControls";
+import { ProductImageUploader } from "@/components/ProductImageUploader";
 import type { Dimension, ProductDetail } from "@/lib/admin-data";
 import type { Dictionary, Locale } from "@/lib/i18n";
 
@@ -20,8 +21,7 @@ export function ProductForm({
 }) {
   const images = [...(product?.product_images ?? [])]
     .sort((a, b) => a.slot - b.slot || a.sort - b.sort)
-    .map((image) => image.url)
-    .join("\n");
+    .map((image) => image.url);
   const performance = [...(product?.product_performance ?? [])]
     .sort((a, b) => a.sort - b.sort)
     .map((item) => [item.test_item, item.standard_method, item.test_index].filter(Boolean).join(" | "))
@@ -141,9 +141,7 @@ export function ProductForm({
 
       <section className="rounded-lg border border-admin-line bg-white p-5 shadow-admin-soft">
         <h2 className="mb-5 text-lg font-black">{t.images}</h2>
-        <Field label="Image URLs, one per line">
-          <textarea className={textareaClass} name="images" defaultValue={images} placeholder="/assets/product/product1-1.png" />
-        </Field>
+        <ProductImageUploader name="images" initialImages={images} locale={locale} />
       </section>
 
       <section className="grid gap-6 xl:grid-cols-2">

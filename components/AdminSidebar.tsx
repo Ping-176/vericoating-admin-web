@@ -39,7 +39,7 @@ export function AdminSidebar({
             title="Vericoating Admin"
           >
             <span className="grid size-12 shrink-0 place-items-center bg-admin-accent text-sm font-black text-admin-primary">
-              TERO
+              TUBO
             </span>
             {!collapsed ? (
               <span className="grid min-w-0 gap-1">
