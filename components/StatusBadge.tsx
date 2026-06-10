@@ -6,6 +6,9 @@ const statusStyles: Record<string, string> = {
   technical_review: "bg-amber-100 text-amber-800",
   preparing_sample: "bg-blue-100 text-blue-800",
   dispatched: "bg-indigo-100 text-indigo-800",
+  quoted: "bg-cyan-100 text-cyan-800",
+  sample_recommended: "bg-violet-100 text-violet-800",
+  closed: "bg-emerald-100 text-emerald-800",
   completed: "bg-emerald-100 text-emerald-800",
   cancelled: "bg-rose-100 text-rose-800",
 };

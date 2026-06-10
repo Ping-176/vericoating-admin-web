@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Boxes, ChevronsLeft, ChevronsRight, FlaskConical, Gauge, Layers3 } from "lucide-react";
+import { Boxes, ChevronsLeft, ChevronsRight, FileQuestion, FlaskConical, Gauge, Layers3 } from "lucide-react";
 import type { Dictionary, Locale } from "@/lib/i18n";
 
 const navItems = [
@@ -10,6 +10,7 @@ const navItems = [
   { key: "products", href: "products", icon: Boxes },
   { key: "dimensions", href: "dimensions", icon: Layers3 },
   { key: "sampleRequests", href: "sample-requests", icon: FlaskConical },
+  { key: "rfqRequests", href: "rfq-requests", icon: FileQuestion },
 ] as const;
 
 export function AdminSidebar({

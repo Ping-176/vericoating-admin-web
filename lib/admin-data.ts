@@ -83,6 +83,28 @@ export interface SampleRequest {
   products: { legacy_id: string; name_en: string; name_zh: string | null } | null;
 }
 
+export interface RfqRequest {
+  id: string;
+  request_no: string;
+  product_id: string;
+  user_id: string | null;
+  company: string;
+  contact_name: string;
+  email: string;
+  country: string | null;
+  application: string | null;
+  substrate: string | null;
+  finish: string | null;
+  annual_volume: string | null;
+  requirements: string | null;
+  timeline: string | null;
+  status: string;
+  admin_note: string | null;
+  created_at: string;
+  updated_at: string;
+  products: { legacy_id: string; name_en: string; name_zh: string | null } | null;
+}
+
 function maybeSingleRelation<T>(value: T | T[] | null): T | null {
   return Array.isArray(value) ? value[0] ?? null : value;
 }
@@ -266,6 +288,78 @@ export async function getSampleRequest(id: string) {
       ...raw,
       products: maybeSingleRelation(raw.products as SampleRequest["products"] | SampleRequest["products"][] | null),
     } as SampleRequest,
+    error: null,
+  };
+}
+
+export async function getRfqRequests(filters?: {
+  search?: string;
+  status?: string;
+  product?: string;
+  limit?: number;
+}) {
+  const supabase = await createClient();
+  let query = supabase
+    .from("rfq_requests")
+    .select("*, products(legacy_id,name_en,name_zh)")
+    .order("created_at", { ascending: false });
+
+  if (filters?.status) query = query.eq("status", filters.status);
+  if (filters?.product) query = query.eq("product_id", filters.product);
+  if (filters?.limit) query = query.limit(filters.limit);
+
+  const search = filters?.search?.trim();
+  if (search) {
+    const term = `%${search.replaceAll("%", "\\%").replaceAll(",", " ")}%`;
+    query = query.or(
+      [
+        `request_no.ilike.${term}`,
+        `company.ilike.${term}`,
+        `contact_name.ilike.${term}`,
+        `email.ilike.${term}`,
+        `country.ilike.${term}`,
+        `application.ilike.${term}`,
+        `substrate.ilike.${term}`,
+        `finish.ilike.${term}`,
+        `annual_volume.ilike.${term}`,
+        `requirements.ilike.${term}`,
+        `timeline.ilike.${term}`,
+      ].join(","),
+    );
+  }
+
+  const { data, error } = await query;
+  if (error) return { rows: [] as RfqRequest[], error: error.message };
+
+  const rows = (data ?? []) as unknown as Array<Record<string, unknown>>;
+
+  return {
+    rows: rows.map((row) => ({
+      ...row,
+      products: maybeSingleRelation(row.products as RfqRequest["products"] | RfqRequest["products"][] | null),
+    })) as RfqRequest[],
+    error: null as string | null,
+  };
+}
+
+export async function getRfqRequest(id: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("rfq_requests")
+    .select("*, products(legacy_id,name_en,name_zh)")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) return { row: null, error: error.message };
+  if (!data) return { row: null, error: null };
+
+  const raw = data as unknown as Record<string, unknown>;
+
+  return {
+    row: {
+      ...raw,
+      products: maybeSingleRelation(raw.products as RfqRequest["products"] | RfqRequest["products"][] | null),
+    } as RfqRequest,
     error: null,
   };
 }
