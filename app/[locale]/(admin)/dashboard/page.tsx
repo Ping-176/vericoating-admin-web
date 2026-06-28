@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertTriangle, Boxes, FlaskConical } from "lucide-react";
+import { AlertTriangle, FlaskConical, PackageSearch } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { StatusBadge } from "@/components/StatusBadge";
 import { dictionaries, normalizeLocale } from "@/lib/i18n";
@@ -10,24 +10,24 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   const { locale: rawLocale } = await params;
   const locale = normalizeLocale(rawLocale);
   const t = dictionaries[locale];
-  const { products, sampleRequests, sampleRequestsError } = await getDashboardData();
+  const { skus, sampleRequests, sampleRequestsError } = await getDashboardData(locale);
 
-  const published = products.filter((product) => product.status === "published").length;
-  const draft = products.filter((product) => product.status === "draft").length;
-  const archived = products.filter((product) => product.status === "archived").length;
-  const sampleEnabled = products.filter((product) => product.sample_available).length;
+  const published = skus.filter((sku) => sku.status === "published").length;
+  const draft = skus.filter((sku) => sku.status === "draft").length;
+  const archived = skus.filter((sku) => sku.status === "archived").length;
+  const sampleEnabled = skus.filter((sku) => sku.sample_available).length;
   const newRequests = sampleRequests.filter((request) => request.status === "new").length;
   const reviewRequests = sampleRequests.filter((request) => request.status === "technical_review").length;
-  const missingDocs = products.filter((product) => {
-    const docs = product.product_documents ?? [];
-    return !docs.some((doc) => doc.doc_type === "TDS") || !docs.some((doc) => doc.doc_type === "MSDS");
+  const missingDocs = skus.filter((sku) => {
+    const docs = sku.certifications ?? [];
+    return !docs.length;
   });
 
   const cards = [
-    { label: t.totalProducts, value: products.length, icon: Boxes },
-    { label: t.publishedProducts, value: published, icon: Boxes },
-    { label: t.draftProducts, value: draft, icon: Boxes },
-    { label: t.archivedProducts, value: archived, icon: Boxes },
+    { label: t.totalProducts, value: skus.length, icon: PackageSearch },
+    { label: t.publishedProducts, value: published, icon: PackageSearch },
+    { label: t.draftProducts, value: draft, icon: PackageSearch },
+    { label: t.archivedProducts, value: archived, icon: PackageSearch },
     { label: t.sampleEnabledProducts, value: sampleEnabled, icon: FlaskConical },
     { label: t.newSampleRequests, value: newRequests, icon: FlaskConical },
     { label: t.reviewSampleRequests, value: reviewRequests, icon: FlaskConical },
@@ -70,7 +70,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
                   <div>
                     <strong className="text-sm font-black">{request.request_no}</strong>
                     <p className="mt-1 text-xs font-bold text-admin-muted">
-                      {request.company} · {request.products?.name_en ?? "-"}
+                      {request.company} · {request.sku?.name ?? "-"}
                     </p>
                   </div>
                   <StatusBadge value={request.status} />
@@ -87,19 +87,19 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
             <h2 className="text-lg font-black">{t.recentProducts}</h2>
           </div>
           <div className="divide-y divide-admin-line">
-            {products.slice(0, 6).map((product) => (
+            {skus.slice(0, 6).map((sku) => (
               <Link
-                key={product.id}
-                href={`/${locale}/products/${product.id}`}
+                key={sku.id}
+                href={`/${locale}/sku-parameters/${sku.id}`}
                 className="grid gap-2 px-5 py-4 hover:bg-admin-bg md:grid-cols-[1fr_auto]"
               >
                 <div>
-                  <strong className="text-sm font-black">{product.name_en}</strong>
+                  <strong className="text-sm font-black">{sku.name}</strong>
                   <p className="mt-1 text-xs font-bold text-admin-muted">
-                    {product.legacy_id} · {formatDate(product.updated_at)}
+                    {sku.sku_code} · {formatDate(sku.updated_at)}
                   </p>
                 </div>
-                <StatusBadge value={product.status} />
+                <StatusBadge value={sku.status} />
               </Link>
             ))}
           </div>

@@ -4,7 +4,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { inputClass, secondaryButtonClass } from "@/components/FormControls";
 import { dictionaries, normalizeLocale } from "@/lib/i18n";
 import { formatDate } from "@/lib/format";
-import { getProducts, getSampleRequests } from "@/lib/admin-data";
+import { getSampleRequests, getSkuOptions } from "@/lib/admin-data";
 
 const statuses = ["new", "technical_review", "preparing_sample", "dispatched", "completed", "cancelled"];
 
@@ -19,7 +19,7 @@ export default async function SampleRequestsPage({
   const filters = await searchParams;
   const locale = normalizeLocale(rawLocale);
   const t = dictionaries[locale];
-  const [products, result] = await Promise.all([getProducts(), getSampleRequests(filters)]);
+  const [skus, result] = await Promise.all([getSkuOptions(locale), getSampleRequests(filters, locale)]);
 
   return (
     <>
@@ -37,9 +37,9 @@ export default async function SampleRequestsPage({
         </select>
         <select className={inputClass} name="product" defaultValue={filters.product ?? ""}>
           <option value="">{t.product}: {t.all}</option>
-          {products.map((product) => (
-            <option key={product.id} value={product.id}>
-              {product.legacy_id} · {product.name_en}
+          {skus.map((sku) => (
+            <option key={sku.id} value={sku.id}>
+              {sku.sku_code} · {sku.name}
             </option>
           ))}
         </select>
@@ -75,7 +75,7 @@ export default async function SampleRequestsPage({
                         {request.request_no}
                       </Link>
                     </td>
-                    <td className="px-4 py-4 text-sm font-bold">{request.products?.name_en ?? "-"}</td>
+                    <td className="px-4 py-4 text-sm font-bold">{request.sku?.name ?? "-"}</td>
                     <td className="px-4 py-4 text-sm font-bold">{request.company}</td>
                     <td className="px-4 py-4 text-sm font-bold">{request.contact_name}</td>
                     <td className="px-4 py-4 text-sm font-bold">{request.email}</td>

@@ -24,6 +24,7 @@ export function AdminFrame({
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
   const otherLocale = oppositeLocale(locale);
+  const otherLocalePath = pathname.replace(`/${locale}`, `/${otherLocale}`);
 
   useEffect(() => {
     setCollapsed(window.localStorage.getItem(STORAGE_KEY) === "true");
@@ -41,7 +42,7 @@ export function AdminFrame({
     <div className="min-h-screen bg-admin-bg text-admin-graphite">
       <AdminSidebar locale={locale} t={t} collapsed={collapsed} onToggle={toggle} />
 
-      <div className={`transition-[padding] duration-200 ${collapsed ? "lg:pl-20" : "lg:pl-72"}`}>
+      <div className={`transition-[padding] duration-200 ${collapsed ? "lg:pl-16" : "lg:pl-60"}`}>
         <header className="sticky top-0 z-10 border-b border-admin-line bg-white/90 px-4 backdrop-blur lg:px-8">
           <div className="flex min-h-16 items-center justify-between gap-4">
             <Link href={`/${locale}/dashboard`} className="flex items-center gap-3 lg:hidden">
@@ -70,7 +71,7 @@ export function AdminFrame({
             </nav>
             <div className="ml-auto flex items-center gap-3">
               <Link
-                href={`/${otherLocale}/dashboard`}
+                href={otherLocalePath}
                 className="inline-flex min-h-9 items-center gap-2 rounded-md border border-admin-line bg-white px-3 text-xs font-black text-admin-primary hover:bg-admin-bg"
               >
                 <Languages size={15} />

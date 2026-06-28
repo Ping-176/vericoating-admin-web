@@ -4,7 +4,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import { inputClass, secondaryButtonClass } from "@/components/FormControls";
 import { dictionaries, normalizeLocale } from "@/lib/i18n";
 import { formatDate } from "@/lib/format";
-import { getProducts, getRfqRequests } from "@/lib/admin-data";
+import { getRfqRequests, getSkuOptions } from "@/lib/admin-data";
 
 const statuses = ["new", "technical_review", "quoted", "sample_recommended", "closed", "cancelled"];
 
@@ -19,7 +19,7 @@ export default async function RfqRequestsPage({
   const filters = await searchParams;
   const locale = normalizeLocale(rawLocale);
   const t = dictionaries[locale];
-  const [products, result] = await Promise.all([getProducts(), getRfqRequests(filters)]);
+  const [skus, result] = await Promise.all([getSkuOptions(locale), getRfqRequests(filters, locale)]);
 
   return (
     <>
@@ -41,9 +41,9 @@ export default async function RfqRequestsPage({
           <option value="">
             {t.product}: {t.all}
           </option>
-          {products.map((product) => (
-            <option key={product.id} value={product.id}>
-              {product.legacy_id} · {product.name_en}
+          {skus.map((sku) => (
+            <option key={sku.id} value={sku.id}>
+              {sku.sku_code} · {sku.name}
             </option>
           ))}
         </select>
@@ -81,7 +81,7 @@ export default async function RfqRequestsPage({
                         {request.request_no}
                       </Link>
                     </td>
-                    <td className="px-4 py-4 text-sm font-bold">{request.products?.name_en ?? "-"}</td>
+                    <td className="px-4 py-4 text-sm font-bold">{request.sku?.name ?? "-"}</td>
                     <td className="px-4 py-4 text-sm font-bold">{request.company}</td>
                     <td className="px-4 py-4 text-sm font-bold">{request.contact_name}</td>
                     <td className="px-4 py-4 text-sm font-bold">{request.email}</td>

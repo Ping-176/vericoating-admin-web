@@ -20,7 +20,7 @@ export default async function SampleRequestDetailPage({
   const state = await searchParams;
   const locale = normalizeLocale(rawLocale);
   const t = dictionaries[locale];
-  const { row, error } = await getSampleRequest(id);
+  const { row, error } = await getSampleRequest(id, locale);
 
   if (error) {
     return (
@@ -36,7 +36,7 @@ export default async function SampleRequestDetailPage({
   if (!row) notFound();
 
   const details = [
-    [t.product, `${row.products?.legacy_id ?? "-"} · ${row.products?.name_en ?? "-"}`],
+    [t.skuParameters, `${row.sku?.sku_code ?? "-"} · ${row.sku?.name ?? "-"}`],
     [t.company, row.company],
     [t.contact, row.contact_name],
     [t.email, row.email],

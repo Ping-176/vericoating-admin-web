@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Boxes, ChevronsLeft, ChevronsRight, FileQuestion, FlaskConical, Gauge, Layers3 } from "lucide-react";
+import { ChevronsLeft, ChevronsRight, Factory, FileQuestion, FlaskConical, Gauge, PackageSearch, SlidersHorizontal } from "lucide-react";
 import type { Dictionary, Locale } from "@/lib/i18n";
 
 const navItems = [
   { key: "dashboard", href: "dashboard", icon: Gauge },
-  { key: "products", href: "products", icon: Boxes },
-  { key: "dimensions", href: "dimensions", icon: Layers3 },
+  { key: "parameterDefinition", href: "parameter-definition", icon: SlidersHorizontal },
+  { key: "systemParameters", href: "system-parameters", icon: Factory },
+  { key: "skuParameters", href: "sku-parameters", icon: PackageSearch },
   { key: "sampleRequests", href: "sample-requests", icon: FlaskConical },
   { key: "rfqRequests", href: "rfq-requests", icon: FileQuestion },
 ] as const;
@@ -29,19 +30,16 @@ export function AdminSidebar({
   return (
     <aside
       className={`fixed inset-y-0 left-0 z-20 hidden border-r border-admin-line bg-admin-primary text-white transition-[width] duration-200 lg:flex lg:flex-col ${
-        collapsed ? "w-20" : "w-72"
+        collapsed ? "w-16" : "w-60"
       }`}
     >
-      <div className={`border-b border-white/10 py-6 ${collapsed ? "px-3" : "px-6"}`}>
+      <div className={`border-b border-white/10 py-5 ${collapsed ? "px-2" : "px-4"}`}>
         <div className="flex items-center justify-between gap-3">
           <Link
             href={`/${locale}/dashboard`}
-            className={`flex min-w-0 items-center gap-3 ${collapsed ? "justify-center" : ""}`}
+            className={`flex min-w-0 items-center ${collapsed ? "sr-only" : ""}`}
             title="Vericoating Admin"
           >
-            <span className="grid size-12 shrink-0 place-items-center bg-admin-accent text-sm font-black text-admin-primary">
-              TUBO
-            </span>
             {!collapsed ? (
               <span className="grid min-w-0 gap-1">
                 <strong className="truncate text-lg leading-none">Vericoating</strong>
@@ -72,7 +70,7 @@ export function AdminSidebar({
         ) : null}
       </div>
 
-      <nav className={`grid gap-2 py-5 ${collapsed ? "px-3" : "px-4"}`}>
+      <nav className={`grid gap-2 py-5 ${collapsed ? "px-2" : "px-3"}`}>
         {navItems.map((item) => {
           const Icon = item.icon;
           const href = `/${locale}/${item.href}`;
@@ -85,7 +83,7 @@ export function AdminSidebar({
               title={t[item.key]}
               aria-current={isActive ? "page" : undefined}
               className={`flex min-h-12 items-center gap-3 rounded-md text-sm font-black transition ${
-                collapsed ? "justify-center px-0" : "px-4"
+                collapsed ? "justify-center px-0" : "px-3"
               } ${
                 isActive
                   ? "bg-admin-accent !text-admin-primary shadow-[inset_4px_0_0_rgba(255,255,255,0.72)]"

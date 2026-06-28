@@ -1,18 +1,7 @@
-import { PageHeader } from "@/components/PageHeader";
-import { ProductForm } from "@/components/ProductForm";
-import { dictionaries, normalizeLocale } from "@/lib/i18n";
-import { getDimensions } from "@/lib/admin-data";
+import { redirect } from "next/navigation";
+import { normalizeLocale } from "@/lib/i18n";
 
-export default async function NewProductPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function NewProductRedirectPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale: rawLocale } = await params;
-  const locale = normalizeLocale(rawLocale);
-  const t = dictionaries[locale];
-  const dimensions = await getDimensions();
-
-  return (
-    <>
-      <PageHeader title={t.createProduct} />
-      <ProductForm locale={locale} t={t} dimensions={dimensions} />
-    </>
-  );
+  redirect(`/${normalizeLocale(rawLocale)}/sku-parameters`);
 }
