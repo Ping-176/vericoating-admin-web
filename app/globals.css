@@ -154,6 +154,34 @@ textarea {
   color: var(--admin-muted);
 }
 
+.filter-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  border: 1px solid var(--admin-line);
+  border-radius: 8px;
+  background: #ffffff;
+  padding: 0 10px;
+}
+
+.filter-box span {
+  color: var(--admin-muted);
+  font-size: 12px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.filter-box select {
+  min-height: 34px;
+  border: 0;
+  background: transparent;
+  color: var(--admin-graphite);
+  font-size: 13px;
+  font-weight: 800;
+  outline: none;
+}
+
 .search-box input {
   min-width: 0;
   width: 100%;
@@ -308,7 +336,7 @@ textarea {
 
 .definition-item {
   display: grid;
-  grid-template-columns: minmax(430px, 0.95fr) minmax(420px, 1.2fr) auto;
+  grid-template-columns: minmax(430px, 0.95fr) minmax(300px, 0.78fr) auto;
   gap: 12px;
   align-items: start;
   padding: 10px 12px;
@@ -321,11 +349,16 @@ textarea {
   min-width: 0;
 }
 
+.definition-options-field {
+  min-width: 0;
+  max-width: 680px;
+}
+
 .definition-card-actions {
   display: flex;
   align-items: flex-start;
   justify-content: end;
-  padding-top: 20px;
+  padding-top: 18px;
 }
 
 .definition-item .field {
@@ -367,16 +400,21 @@ textarea {
 
 .option-editor {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   margin-top: 6px;
 }
 
 .option-row {
   display: grid;
-  grid-template-columns: minmax(96px, 0.42fr) minmax(120px, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  min-width: 0;
+}
+
+.option-row input {
+  min-width: 0;
 }
 
 .option-row input[readonly] {
@@ -998,6 +1036,7 @@ textarea {
 
   .list-tools {
     flex-direction: row;
+    flex-wrap: wrap;
   }
 
   .definition-fields,

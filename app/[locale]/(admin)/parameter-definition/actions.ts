@@ -48,7 +48,8 @@ export async function saveParameterDefinitionAction(formData: FormData) {
   const id = textOrNull(formData.get("id"));
   const code = String(formData.get("code") ?? "").trim();
   const name = String(formData.get("name") ?? "").trim();
-  const options = parseOptions(formData.get("options_json"));
+  const valueType = String(formData.get("value_type") ?? "option") === "text" ? "text" : "option";
+  const options = valueType === "text" ? [] : parseOptions(formData.get("options_json"));
 
   if (!code || !name) redirect(path(locale, id, "error=required"));
   if (options === null) redirect(path(locale, id, "error=json"));
@@ -60,8 +61,8 @@ export async function saveParameterDefinitionAction(formData: FormData) {
 
   const payload = {
     code,
-    select_type: String(formData.get("select_type") ?? "single") === "multiple" ? "multiple" : "single",
-    value_type: String(formData.get("value_type") ?? "option"),
+    select_type: valueType === "option" && String(formData.get("select_type") ?? "single") === "multiple" ? "multiple" : "single",
+    value_type: valueType,
     is_active: formData.get("is_active") === "on",
     sort: Number(formData.get("sort") ?? 0),
     updated_by: user?.id ?? null,
@@ -119,12 +120,14 @@ export async function saveParameterDefinitionAction(formData: FormData) {
     if (error) redirect(path(locale, parameterId, "error=save"));
   }
 
-  const removedCodes =
-    locale === "zh"
-      ? ((existingOptions ?? []) as Array<{ code: string }>)
-          .map((option) => option.code)
-          .filter((code) => !submittedCodes.has(code))
-      : [];
+  let removedCodes: string[] = [];
+  if (valueType === "text") {
+    removedCodes = ((existingOptions ?? []) as Array<{ code: string }>).map((option) => option.code);
+  } else {
+    removedCodes = ((existingOptions ?? []) as Array<{ code: string }>)
+      .map((option) => option.code)
+      .filter((code) => !submittedCodes.has(code));
+  }
   if (removedCodes.length) {
     const { error: deleteError } = await supabase
       .from("parameter_definition_options")
