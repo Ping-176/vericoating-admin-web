@@ -55,6 +55,8 @@ export async function saveProductSkuAction(formData: FormData) {
     sort: Number(formData.get("sort") ?? 0),
     price: numberOrNull(formData.get("price")),
     sample_fee: numberOrNull(formData.get("sample_fee")),
+    images,
+    certifications,
     updated_by: user?.id ?? null,
   };
 
@@ -78,8 +80,6 @@ export async function saveProductSkuAction(formData: FormData) {
     base_info: baseInfo as Record<string, unknown>,
     parameter_overrides: parameterOverrides,
     custom_labels: customLabels,
-    images,
-    certifications,
   });
   if (error) redirect(path(locale, skuId, "error=save"));
 
@@ -105,7 +105,7 @@ export async function copyProductSkuTranslationAction(formData: FormData) {
 
   const { data, error } = await supabase
     .from("product_sku_translations")
-    .select("name,intro,description,base_info,parameter_overrides,custom_labels,images,certifications")
+    .select("name,intro,description,base_info,parameter_overrides,custom_labels")
     .eq("sku_id", id)
     .eq("locale", fromLocale)
     .maybeSingle();
@@ -121,8 +121,6 @@ export async function copyProductSkuTranslationAction(formData: FormData) {
     base_info: data.base_info ?? {},
     parameter_overrides: data.parameter_overrides ?? [],
     custom_labels: data.custom_labels ?? [],
-    images: data.images ?? [],
-    certifications: data.certifications ?? [],
   });
   if (upsertError) redirect(path(locale, id, "error=copy"));
 

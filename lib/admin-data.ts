@@ -9,10 +9,8 @@ type Translation = {
   intro?: string | null;
   base_info?: Record<string, unknown> | null;
   parameter_groups?: unknown[] | null;
-  certifications?: unknown[] | null;
   parameter_overrides?: unknown[] | null;
   custom_labels?: string[] | null;
-  images?: unknown[] | null;
 };
 
 function firstRelation<T>(value: T | T[] | null | undefined): T | null {
@@ -215,7 +213,7 @@ function mapSystem(row: Record<string, unknown>, locale: Locale): ProductSystem 
     base_common: (row.base_common as Record<string, unknown> | null) ?? {},
     base_info: translation?.base_info ?? {},
     parameter_groups: jsonArray(translation?.parameter_groups),
-    certifications: jsonArray(translation?.certifications),
+    certifications: jsonArray(row.certifications as unknown[] | null),
     has_current_translation: state.hasCurrentTranslation,
     translation_locale: state.translationLocale,
     is_fallback: state.isFallback,
@@ -246,8 +244,8 @@ function mapSku(row: Record<string, unknown>, locale: Locale): ProductSku {
     base_info: translation?.base_info ?? {},
     parameter_overrides: jsonArray(translation?.parameter_overrides),
     custom_labels: jsonArray(translation?.custom_labels),
-    images: jsonArray(translation?.images),
-    certifications: jsonArray(translation?.certifications),
+    images: jsonArray(row.images as unknown[] | null),
+    certifications: jsonArray(row.certifications as unknown[] | null),
     system: system
       ? {
           system_code: String(system.system_code),
@@ -296,7 +294,7 @@ export async function getProductSystems(locale: Locale) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("product_systems")
-    .select("*, product_system_translations(locale,name,intro,description,base_info,parameter_groups,certifications)")
+    .select("*, product_system_translations(locale,name,intro,description,base_info,parameter_groups)")
     .order("sort", { ascending: true })
     .order("updated_at", { ascending: false });
 
@@ -316,7 +314,7 @@ export async function getProductSkus(locale: Locale, filters?: { search?: string
     .select(
       [
         "*",
-        "product_sku_translations(locale,name,intro,description,base_info,parameter_overrides,custom_labels,images,certifications)",
+        "product_sku_translations(locale,name,intro,description,base_info,parameter_overrides,custom_labels)",
         "product_systems(system_code,product_system_translations(locale,name))",
       ].join(","),
     )

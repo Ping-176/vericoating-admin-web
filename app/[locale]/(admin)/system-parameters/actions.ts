@@ -45,6 +45,7 @@ export async function saveProductSystemAction(formData: FormData) {
     status: String(formData.get("status") ?? "draft"),
     sort: Number(formData.get("sort") ?? 0),
     base_common: baseCommon as Record<string, unknown>,
+    certifications,
     updated_by: user?.id ?? null,
   };
 
@@ -67,7 +68,6 @@ export async function saveProductSystemAction(formData: FormData) {
     description: textOrNull(formData.get("description")),
     base_info: baseInfo as Record<string, unknown>,
     parameter_groups: parameterGroups,
-    certifications,
   });
   if (error) redirect(path(locale, systemId, "error=save"));
 
@@ -93,7 +93,7 @@ export async function copyProductSystemTranslationAction(formData: FormData) {
 
   const { data, error } = await supabase
     .from("product_system_translations")
-    .select("name,intro,description,base_info,parameter_groups,certifications")
+    .select("name,intro,description,base_info,parameter_groups")
     .eq("system_id", id)
     .eq("locale", fromLocale)
     .maybeSingle();
@@ -108,7 +108,6 @@ export async function copyProductSystemTranslationAction(formData: FormData) {
     description: data.description,
     base_info: data.base_info ?? {},
     parameter_groups: data.parameter_groups ?? [],
-    certifications: data.certifications ?? [],
   });
   if (upsertError) redirect(path(locale, id, "error=copy"));
 
